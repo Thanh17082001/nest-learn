@@ -1,13 +1,12 @@
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { RoleInterface } from "../interface/roles.interface";
 
 
 @Schema()
 export class Role {
   @Prop()
   name: string;
-  @Prop()
+  @Prop({default:''})
   description: string;
 }
 
