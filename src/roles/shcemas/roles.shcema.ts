@@ -4,10 +4,10 @@ import { RoleInterface } from "../interface/roles.interface";
 
 
 @Schema()
-export class Role {
+export class Role extends RoleInterface {
   @Prop()
   name: string;
-  @Prop()
+  @Prop({default:''})
   description: string;
 }
 

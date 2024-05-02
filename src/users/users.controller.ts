@@ -8,6 +8,8 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Put,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserCreateDto } from './dto/users.createDto';
@@ -17,6 +19,7 @@ import * as bcrypt from 'bcryptjs';
 import { UserLoginDto } from './dto/users.loginDto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from 'src/gruard/auth';
+import { UserUpdaeRoleDto } from './dto/user.updateRoleDto';
 
 @Controller('users')
 export class UsersController {
@@ -77,6 +80,16 @@ export class UsersController {
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('update-role')
+  async updateRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
+    try {
+      
+    } catch (error) {
+      
     }
   }
 }

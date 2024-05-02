@@ -19,4 +19,12 @@ export class UsersService {
   async getAll(): Promise<Array<UserInterface>> {
     return await this.userModel.find().lean();
   }
+
+  async updateRole(userId: string, roleId: string): Promise<UserInterface> {
+    return await this.userModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { roles: roleId } },
+      { returnDocument: 'after', upsert: true },
+    );
+  }
 }
