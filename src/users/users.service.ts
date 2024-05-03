@@ -17,7 +17,7 @@ export class UsersService {
   }
 
   async getAll(): Promise<Array<UserInterface>> {
-    return await this.userModel.find().lean();
+    return await this.userModel.find().populate({ path: 'roles'}).lean();
   }
 
   async updateRole(userId: string, roleId: string): Promise<UserInterface> {
