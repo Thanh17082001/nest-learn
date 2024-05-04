@@ -4,11 +4,12 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      disableErrorMessages: true,
-    }),
-  );
+  app.setGlobalPrefix('api'); // set global route 
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     disableErrorMessages: true,
+  //   }),
+  // );
   await app.listen(3005);
 }
 bootstrap();

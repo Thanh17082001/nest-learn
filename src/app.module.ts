@@ -16,7 +16,7 @@ import { RolesModule } from './roles/roles.module';
     JwtModule.register({
       global: true,
       secret: process.env.JwtSecret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '60d' },
     }),
     MongooseModule.forRoot(process.env.DB),
     UsersModule,

@@ -17,7 +17,16 @@ export class RolesService {
     return await this.roleModel.findOne(data);
   }
 
+  async findById(id: string): Promise<RoleInterface> {
+    return await this.roleModel.findById(id);
+  }
+
   async find(): Promise<Array<RoleInterface>> {
     return await this.roleModel.find();
+  }
+  async update(id: string, data: object): Promise<Array<RoleInterface>> {
+    return await this.roleModel.findByIdAndUpdate(id, data, {
+      returnDocument: 'after',
+    });
   }
 }

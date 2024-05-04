@@ -4,19 +4,20 @@ import {
   Body,
   Res,
   Post,
-  Response,
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Put,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserCreateDto } from './dto/users.createDto';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { UserLoginDto } from './dto/users.loginDto';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from 'src/gruard/auth';
+import { UserUpdaeRoleDto } from './dto/user.updateRoleDto';
+import{Response} from 'express'
 
 @Controller('users')
 export class UsersController {
@@ -78,5 +79,21 @@ export class UsersController {
       console.log(error);
       res.status(500).json(error);
     }
+  }
+
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: false }))
+  @Put('update-role')
+  async updateRole(
+    @Body() data: UserUpdaeRoleDto,
+    @Res() res: Response,
+    @Query() query,
+  ) {
+    try {
+      const userId: string = query.userId;
+      const result = await this.userService.updateRole(userId, data.roleId)
+      console.log(result);
+      return res.status(200).json({ mes: 'create successfully' });
+    } catch (error) {}
   }
 }
