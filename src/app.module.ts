@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesModule } from './roles/roles.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -18,8 +19,9 @@ import { RolesModule } from './roles/roles.module';
       signOptions: { expiresIn: '60d' },
     }),
     MongooseModule.forRoot(process.env.DB),
-    UsersModule,
     RolesModule,
+    UsersModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],

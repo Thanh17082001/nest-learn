@@ -1,3 +1,4 @@
+import { Product } from './../products/entities/product.entity';
 
 import {
   Controller,
@@ -20,15 +21,17 @@ import { AuthGuard } from 'src/guard/auth';
 import { UserUpdaeRoleDto } from './dto/user.updateRoleDto';
 import { Response } from 'express';
 import { Roles } from 'src/guard/role.decorator';
-import { RoleGuard } from 'src/guard/role.guard';
 import Role from 'src/guard/role.enum';
 import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { RolesService } from 'src/roles/roles.service';
+import { RoleGuard } from 'src/guard/role.guard';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(
     private userService: UsersService,
+    private rolesService: RolesService,
     private jwt: JwtService,
   ) {}
 
@@ -79,7 +82,6 @@ export class UsersController {
       if (!!!userExist) {
         return res.status(400).json({ mes: 'email or password is incorrect' });
       }
-
       const isPass = await bcrypt.compare(data.password, userExist.password);
       if (!isPass) {
         return res
@@ -103,11 +105,13 @@ export class UsersController {
   @UseGuards(RoleGuard) //2
   @UseGuards(AuthGuard) //1
   @Get()
-  @Roles(Role.Staff)
+  @Roles()
   async getAll(@Res() res) {
+    console.log(Role.staff);
     try {
       const users = await this.userService.getAll();
-      res.json(users);
+      const test = await this.rolesService.find();
+      res.json({ test , users});
     } catch (error) {
       console.log(error);
       res.status(500).json(error);

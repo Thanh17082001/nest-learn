@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from './shcemas/roles.shcema';
+import { Role, RoleDocument } from './shcemas/roles.shcema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RolesCreateDto } from './dto/roles.createDto';
