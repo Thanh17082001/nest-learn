@@ -1,3 +1,4 @@
+
 import {
   Controller,
   Get,
@@ -15,16 +16,34 @@ import { UserCreateDto } from './dto/users.createDto';
 import * as bcrypt from 'bcryptjs';
 import { UserLoginDto } from './dto/users.loginDto';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from 'src/gruard/auth';
+import { AuthGuard } from 'src/guard/auth';
 import { UserUpdaeRoleDto } from './dto/user.updateRoleDto';
-import{Response} from 'express'
+import { Response } from 'express';
+import { Roles } from 'src/guard/role.decorator';
+import { RoleGuard } from 'src/guard/role.guard';
+import Role from 'src/guard/role.enum';
+import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('users')
 export class UsersController {
   constructor(
     private userService: UsersService,
     private jwt: JwtService,
   ) {}
+
+  @ApiBody({
+    type: UserCreateDto,
+    examples: {
+      data: {
+        value: {
+          email: '',
+          fullName: '',
+          password: '',
+        } as UserCreateDto,
+      },
+    },
+  })
   @Post('/register')
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: true }))
   async create(@Body() data: UserCreateDto, @Res() res) {
@@ -41,6 +60,17 @@ export class UsersController {
     }
   }
 
+  @ApiBody({
+    type: UserLoginDto,
+    examples: {
+      data: {
+        value: {
+          email: '',
+          password: '',
+        } as UserLoginDto,
+      },
+    },
+  })
   @Post('/login')
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: true }))
   async login(@Body() data: UserLoginDto, @Res() res) {
@@ -69,8 +99,11 @@ export class UsersController {
   }
 
   //middleware tonken
-  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @UseGuards(RoleGuard) //2
+  @UseGuards(AuthGuard) //1
   @Get()
+  @Roles(Role.Staff)
   async getAll(@Res() res) {
     try {
       const users = await this.userService.getAll();
@@ -82,7 +115,25 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: false }))
+  @UsePipes(
+    new ValidationPipe({ transform: true, disableErrorMessages: false }),
+  )
+  @ApiBody({
+    type: UserUpdaeRoleDto,
+    examples: {
+      data: {
+        value: {
+          roleId: '',
+        } as UserUpdaeRoleDto,
+      },
+    },
+  })
+  @ApiQuery({
+    name: 'userId',
+    type: 'string',
+    required: true,
+  })
+  //
   @Put('update-role')
   async updateRole(
     @Body() data: UserUpdaeRoleDto,
@@ -91,7 +142,7 @@ export class UsersController {
   ) {
     try {
       const userId: string = query.userId;
-      const result = await this.userService.updateRole(userId, data.roleId)
+      const result = await this.userService.updateRole(userId, data.roleId);
       console.log(result);
       return res.status(200).json({ mes: 'create successfully' });
     } catch (error) {}
