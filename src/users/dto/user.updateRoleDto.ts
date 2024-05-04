@@ -1,7 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, } from 'class-validator';
 
 export class UserUpdaeRoleDto {
-    @IsNotEmpty()
-    @IsString()
-    roleId: string;
+  @ApiProperty({ type: 'string' })
+  @IsNotEmpty()
+  @IsString()
+  roleId: string;
 }
