@@ -7,8 +7,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api'); // set global route
   // config swagger
    const config = new DocumentBuilder()
-     .setTitle('Api Nest JS')
-     .setDescription('Api description')
+     .setTitle('API USING NEST JS')
+     .setDescription('Author: Nguyen Thien Thanh')
      .setVersion('1.0')
      .build();
    const document = SwaggerModule.createDocument(app, config);

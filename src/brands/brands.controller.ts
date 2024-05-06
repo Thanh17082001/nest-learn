@@ -6,15 +6,13 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BrandInterface } from './interfaces/brands.interface';
-import { Roles } from 'src/guard/role.decorator';
-import { RoleGuard } from 'src/guard/role.guard';
-import { AuthGuard } from 'src/guard/auth';
 
 @Controller('brands')
 @ApiTags('brands')
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
+  //Create Brand 
   @Post('create')
   @ApiBody({
     type: CreateBrandDto,
@@ -34,7 +32,6 @@ export class BrandsController {
   async create(@Body() data: CreateBrandDto, @Res() res: Response) {
     try {
       const exitsBrand = await this.brandsService.findOne({ name: data.name });
-      console.log(exitsBrand);
       if (!!exitsBrand) {
         return res
           .status(409)
@@ -50,11 +47,9 @@ export class BrandsController {
     }
   }
 
+  // Get all brand [query: pageNumber and limit, Body: condition]
   @Get()
-  @Roles('staff')
-  @ApiBearerAuth()
-  @UseGuards(RoleGuard) //2
-  @UseGuards(AuthGuard) //1
+  @ApiBearerAuth() 
   @ApiQuery({
     name: 'pageNumber',
     type: 'number',
@@ -68,7 +63,6 @@ export class BrandsController {
   async getAll(@Res() res: Response, @Query() query: any): Promise<Response> {
     try {
       const { pageNumber, litmit } = query;
-      console.log(pageNumber);
       const brands = await this.brandsService.findAll();
       return res.status(200).json({
         statusCode: 200,
@@ -79,6 +73,7 @@ export class BrandsController {
     }
   }
 
+  // Get by id brand (param /id)
   @Get(':id')
   @ApiParam({
     name: 'id',
@@ -106,6 +101,7 @@ export class BrandsController {
     }
   }
 
+  //Update brand by id (param /id)
   @Patch('update/:id')
   @ApiParam({
     name: 'id',
@@ -150,6 +146,7 @@ export class BrandsController {
     }
   }
 
+  // Delete brand by id (param /id)
   @Delete('delete/:id')
   async remove(@Param('id') id: string, @Res() res: Response):Promise<Response> {
     try {

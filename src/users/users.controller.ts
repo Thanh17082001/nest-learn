@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   Put,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserCreateDto } from './dto/users.createDto';
@@ -34,6 +35,8 @@ export class UsersController {
     private jwt: JwtService,
   ) {}
 
+  // create user
+  @Post('/register')
   @ApiBody({
     type: UserCreateDto,
     examples: {
@@ -46,7 +49,6 @@ export class UsersController {
       },
     },
   })
-  @Post('/register')
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: true }))
   async create(@Body() data: UserCreateDto, @Res() res) {
     try {
@@ -62,6 +64,8 @@ export class UsersController {
     }
   }
 
+  //Login use using jwt
+  @Post('/login')
   @ApiBody({
     type: UserLoginDto,
     examples: {
@@ -73,7 +77,6 @@ export class UsersController {
       },
     },
   })
-  @Post('/login')
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: true }))
   async login(@Body() data: UserLoginDto, @Res() res) {
     try {
@@ -99,6 +102,7 @@ export class UsersController {
     }
   }
 
+  //Get all user
   //middleware tonken
   @Get()
   @Roles('staff')
@@ -116,6 +120,8 @@ export class UsersController {
     }
   }
 
+  //update roles user by id (query: userId, body: roleId)
+  @Patch('update-role')
   @UseGuards(AuthGuard)
   @UsePipes(
     new ValidationPipe({ transform: true, disableErrorMessages: false }),
@@ -135,8 +141,6 @@ export class UsersController {
     type: 'string',
     required: true,
   })
-  //
-  @Put('update-role')
   async updateRole(
     @Body() data: UserUpdaeRoleDto,
     @Res() res: Response,

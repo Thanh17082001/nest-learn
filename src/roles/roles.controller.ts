@@ -23,8 +23,10 @@ import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 @Controller('roles')
 @ApiTags('roles')
 export class RolesController {
-  constructor(private roleService: RolesService) {}
-
+  constructor(private roleService: RolesService) { }
+  
+  //Create role 
+  @Post('/create')
   @ApiBody({
     type: RolesCreateDto,
     examples: {
@@ -36,7 +38,6 @@ export class RolesController {
       },
     },
   })
-  @Post('/create')
   async crate(@Body() data: RolesCreateDto, @Res() res: Response) {
     try {
       const roleExits = await this.roleService.findOne({ name: data.name });
@@ -49,6 +50,9 @@ export class RolesController {
       res.status(500).json(error);
     }
   }
+
+
+  // Get all role
   @UseGuards(AuthGuard)
   @Get()
   async getAll(@Res() res: Response) {
@@ -60,6 +64,8 @@ export class RolesController {
     }
   }
 
+
+  // Update role by id (query id)
   @Patch('/update')
   @ApiBody({
     type: RolesUpdateDto,

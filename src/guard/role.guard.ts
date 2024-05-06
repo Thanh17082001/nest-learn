@@ -4,7 +4,6 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Role } from 'src/roles/shcemas/roles.shcema';
 import { ROLES_KEY } from './role.decorator';
-import { RoleInterface } from 'src/roles/interface/roles.interface';
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) { }
