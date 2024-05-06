@@ -1,7 +1,7 @@
 import { RolesService } from "src/roles/roles.service";
 
 
-const Role = {
+export const Role = {
   user: '',
   admin: '',
   test: '',
@@ -11,10 +11,9 @@ const Role = {
 export const getAllRoles = async (rolesService:RolesService)=>{
   const result = await rolesService.find()
   result.forEach((role) => {
-    Role[role.name]=role._id.toString()
+    Role[role.name.toLowerCase()] = role._id.toString()
   })
 }
 
 
-export default Role;
 

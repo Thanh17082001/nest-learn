@@ -6,6 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesModule } from './roles/roles.module';
 import { ProductsModule } from './products/products.module';
+import { BrandsModule } from './brands/brands.module';
+import { TypesModule } from './types/types.module';
 
 @Module({
   imports: [
@@ -16,12 +18,14 @@ import { ProductsModule } from './products/products.module';
     JwtModule.register({
       global: true,
       secret: process.env.JwtSecret,
-      signOptions: { expiresIn: '60d' },
+      signOptions: { expiresIn: '60m' },
     }),
     MongooseModule.forRoot(process.env.DB),
     RolesModule,
     UsersModule,
     ProductsModule,
+    BrandsModule,
+    TypesModule,
   ],
   controllers: [],
   providers: [],

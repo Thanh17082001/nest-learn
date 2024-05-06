@@ -21,7 +21,6 @@ import { AuthGuard } from 'src/guard/auth';
 import { UserUpdaeRoleDto } from './dto/user.updateRoleDto';
 import { Response } from 'express';
 import { Roles } from 'src/guard/role.decorator';
-import Role from 'src/guard/role.enum';
 import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesService } from 'src/roles/roles.service';
 import { RoleGuard } from 'src/guard/role.guard';
@@ -101,17 +100,16 @@ export class UsersController {
   }
 
   //middleware tonken
+  @Get()
+  @Roles('staff')
   @ApiBearerAuth()
   @UseGuards(RoleGuard) //2
   @UseGuards(AuthGuard) //1
-  @Get()
-  @Roles()
   async getAll(@Res() res) {
-    console.log(Role.staff);
     try {
       const users = await this.userService.getAll();
       const test = await this.rolesService.find();
-      res.json({ test , users});
+      res.json({ test, users });
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
@@ -146,8 +144,7 @@ export class UsersController {
   ) {
     try {
       const userId: string = query.userId;
-      const result = await this.userService.updateRole(userId, data.roleId);
-      console.log(result);
+      await this.userService.updateRole(userId, data.roleId);
       return res.status(200).json({ mes: 'create successfully' });
     } catch (error) {}
   }

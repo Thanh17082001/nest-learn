@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export class RoleInterface extends Document{
+export interface RoleInterface extends Document{
     name: string;
     description:string
 }

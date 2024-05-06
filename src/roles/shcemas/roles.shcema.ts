@@ -1,10 +1,8 @@
-
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { RoleInterface } from "../interface/roles.interface";
-
+import { Document } from "mongoose";
 
 @Schema()
-export class Role extends RoleInterface {
+export class Role extends Document {
   @Prop()
   name: string;
   @Prop({default:''})

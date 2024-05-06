@@ -10,15 +10,16 @@ import {
   ValidationPipe,
   Param,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { RolesCreateDto } from './dto/roles.createDto';
 import { query, Response } from 'express';
 import { RolesService } from './roles.service';
 import { AuthGuard } from 'src/guard/auth';
 import { RolesUpdateDto } from './dto/roles.updateDto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('roles')
 @ApiTags('roles')
 export class RolesController {
@@ -59,6 +60,7 @@ export class RolesController {
     }
   }
 
+  @Patch('/update')
   @ApiBody({
     type: RolesUpdateDto,
     examples: {
@@ -70,7 +72,11 @@ export class RolesController {
       },
     },
   })
-  @Put('/update')
+  @ApiQuery({
+    name: 'id',
+    type: 'string',
+    required: true,
+  })
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: true }))
   async update(
     @Body() data: RolesUpdateDto,
@@ -81,9 +87,6 @@ export class RolesController {
       const role = await this.roleService.findById(query.id);
       if (!!!role) {
         return res.status(400).json({ mes: 'Role not already exits' });
-      }
-      if (!!!data) {
-        return res.status(400).json({ mes: 'Bad request', status: 400 });
       }
       const updated = await this.roleService.update(query.id, data);
       return res.status(200).json({
