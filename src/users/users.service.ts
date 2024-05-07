@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import {Model} from 'mongoose';
-import { User } from './schemas/user.schema';
-import UserInterface from './interface/users.interface';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { User } from "./schemas/user.schema";
+import UserInterface from "./interface/users.interface";
 
 @Injectable()
 export class UsersService {
@@ -13,21 +13,14 @@ export class UsersService {
   }
 
   async findOne(data: object): Promise<UserInterface> {
-    return await this.userModel
-      .findOne(data)
-      .populate({ path: 'roles' })
-      .lean();
+    return await this.userModel.findOne(data).populate({ path: "roles" }).lean();
   }
 
   async getAll(): Promise<Array<UserInterface>> {
-    return await this.userModel.find().populate({ path: 'roles'}).lean();
+    return await this.userModel.find().populate({ path: "roles" }).lean();
   }
 
   async updateRole(userId: string, roleId: string): Promise<UserInterface> {
-    return await this.userModel.findByIdAndUpdate(
-      userId,
-      { $addToSet: { roles: roleId } },
-      { returnDocument: 'after', upsert: true },
-    );
+    return await this.userModel.findByIdAndUpdate(userId, { $addToSet: { roles: roleId } }, { returnDocument: "after", upsert: true });
   }
 }

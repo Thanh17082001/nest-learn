@@ -1,33 +1,21 @@
-import { Product } from './../products/entities/product.entity';
+import { Product } from "./../products/entities/product.entity";
 
-import {
-  Controller,
-  Get,
-  Body,
-  Res,
-  Post,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-  Put,
-  Query,
-  Patch,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UserCreateDto } from './dto/users.createDto';
-import * as bcrypt from 'bcryptjs';
-import { UserLoginDto } from './dto/users.loginDto';
-import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from 'src/guard/auth';
-import { UserUpdaeRoleDto } from './dto/user.updateRoleDto';
-import { Response } from 'express';
-import { Roles } from 'src/guard/role.decorator';
-import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
-import { RolesService } from 'src/roles/roles.service';
-import { RoleGuard } from 'src/guard/role.guard';
+import { Controller, Get, Body, Res, Post, UseGuards, UsePipes, ValidationPipe, Put, Query, Patch } from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { UserCreateDto } from "./dto/users.createDto";
+import * as bcrypt from "bcryptjs";
+import { UserLoginDto } from "./dto/users.loginDto";
+import { JwtService } from "@nestjs/jwt";
+import { AuthGuard } from "src/guard/auth";
+import { UserUpdaeRoleDto } from "./dto/user.updateRoleDto";
+import { Response } from "express";
+import { Roles } from "src/guard/role.decorator";
+import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
+import { RolesService } from "src/roles/roles.service";
+import { RoleGuard } from "src/guard/role.guard";
 
-@Controller('users')
-@ApiTags('users')
+@Controller("users")
+@ApiTags("users")
 export class UsersController {
   constructor(
     private userService: UsersService,
@@ -36,15 +24,15 @@ export class UsersController {
   ) {}
 
   // create user
-  @Post('/register')
+  @Post("/register")
   @ApiBody({
     type: UserCreateDto,
     examples: {
       data: {
         value: {
-          email: '',
-          fullName: '',
-          password: '',
+          email: "",
+          fullName: "",
+          password: "",
         } as UserCreateDto,
       },
     },
@@ -54,25 +42,25 @@ export class UsersController {
     try {
       const userExist = await this.userService.findOne({ email: data.email });
       if (!!userExist) {
-        return res.status(400).json({ mes: 'user already exists' });
+        return res.status(400).json({ mes: "user already exists" });
       }
       data.password = await bcrypt.hash(data.password, 10);
       await this.userService.create(data);
-      res.status(200).json({ mes: 'create successfully' });
+      res.status(200).json({ mes: "create successfully" });
     } catch (error) {
       res.status(500).json(error);
     }
   }
 
   //Login use using jwt
-  @Post('/login')
+  @Post("/login")
   @ApiBody({
     type: UserLoginDto,
     examples: {
       data: {
         value: {
-          email: '',
-          password: '',
+          email: "",
+          password: "",
         } as UserLoginDto,
       },
     },
@@ -82,13 +70,11 @@ export class UsersController {
     try {
       const userExist = await this.userService.findOne({ email: data.email });
       if (!!!userExist) {
-        return res.status(400).json({ mes: 'email or password is incorrect' });
+        return res.status(400).json({ mes: "email or password is incorrect" });
       }
       const isPass = await bcrypt.compare(data.password, userExist.password);
       if (!isPass) {
-        return res
-          .status(400)
-          .json({ mes: 'email or password is incorrect 12121' });
+        return res.status(400).json({ mes: "email or password is incorrect 12121" });
       }
 
       const token = await this.jwt.signAsync(userExist);
@@ -105,7 +91,7 @@ export class UsersController {
   //Get all user
   //middleware tonken
   @Get()
-  @Roles('staff')
+  @Roles("staff")
   @ApiBearerAuth()
   @UseGuards(RoleGuard) //2
   @UseGuards(AuthGuard) //1
@@ -121,35 +107,29 @@ export class UsersController {
   }
 
   //update roles user by id (query: userId, body: roleId)
-  @Patch('update-role')
+  @Patch("update-role")
   @UseGuards(AuthGuard)
-  @UsePipes(
-    new ValidationPipe({ transform: true, disableErrorMessages: false }),
-  )
+  @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: false }))
   @ApiBody({
     type: UserUpdaeRoleDto,
     examples: {
       data: {
         value: {
-          roleId: '',
+          roleId: "",
         } as UserUpdaeRoleDto,
       },
     },
   })
   @ApiQuery({
-    name: 'userId',
-    type: 'string',
+    name: "userId",
+    type: "string",
     required: true,
   })
-  async updateRole(
-    @Body() data: UserUpdaeRoleDto,
-    @Res() res: Response,
-    @Query() query,
-  ) {
+  async updateRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
     try {
       const userId: string = query.userId;
       await this.userService.updateRole(userId, data.roleId);
-      return res.status(200).json({ mes: 'create successfully' });
+      return res.status(200).json({ mes: "create successfully" });
     } catch (error) {}
   }
 }

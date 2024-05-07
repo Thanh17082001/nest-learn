@@ -1,5 +1,5 @@
-export interface BrandInterface{
-    name: string,
-    logo: string,
-    description:string
+export interface BrandInterface {
+  name: string;
+  logo: string;
+  description: string;
 }

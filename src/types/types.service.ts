@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTypeDto } from './dto/create-type.dto';
-import { UpdateTypeDto } from './dto/update-type.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateTypeDto } from "./dto/create-type.dto";
+import { UpdateTypeDto } from "./dto/update-type.dto";
 
 @Injectable()
 export class TypesService {
   create(createTypeDto: CreateTypeDto) {
-    return 'This action adds a new type';
+    return "This action adds a new type";
   }
 
   findAll() {

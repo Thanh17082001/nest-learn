@@ -7,7 +7,7 @@ export class RolesCreateDto {
   @IsString()
   name: string;
 
-  @ApiProperty({required:false})
+  @ApiProperty({ required: false })
   @IsString()
-  description: string = '';
+  description: string = "";
 }

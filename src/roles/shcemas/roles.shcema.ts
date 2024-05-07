@@ -5,7 +5,7 @@ import { Document } from "mongoose";
 export class Role extends Document {
   @Prop()
   name: string;
-  @Prop({default:''})
+  @Prop({ default: "" })
   description: string;
 }
 

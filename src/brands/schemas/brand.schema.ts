@@ -9,8 +9,8 @@ export class Brand extends Document {
   name: string;
   @Prop()
   logo: string;
-  @Prop({ default:'' })
+  @Prop({ default: "" })
   description: string;
 }
 
-export const BrandSchema = SchemaFactory.createForClass(Brand) 
+export const BrandSchema = SchemaFactory.createForClass(Brand);
