@@ -13,6 +13,6 @@ async function bootstrap() {
       tagsSorter: "alpha", // Sắp xếp các tag theo thứ tự từ A-Z
     },
   });
-  await app.listen(3005);
+  await app.listen(8088);
 }
 bootstrap();
