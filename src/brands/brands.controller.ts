@@ -1,11 +1,10 @@
-import { Brand } from "./entities/brand.entity";
+
 import { Response } from "express";
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Res, Query, UseGuards } from "@nestjs/common";
 import { BrandsService } from "./brands.service";
 import { CreateBrandDto } from "./dto/create-brand.dto";
 import { UpdateBrandDto } from "./dto/update-brand.dto";
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
-import { BrandInterface } from "./interfaces/brands.interface";
 
 @Controller("brands")
 @ApiTags("brands")
@@ -135,6 +134,11 @@ export class BrandsController {
 
   // Delete brand by id (param /id)
   @Delete("delete/:id")
+  @ApiParam({
+    name: "id",
+    type: "string",
+    required: true,
+  })
   async remove(@Param("id") id: string, @Res() res: Response): Promise<Response> {
     try {
       const brand = await this.brandsService.findOne({ _id: id });

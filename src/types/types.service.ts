@@ -1,26 +1,40 @@
 import { Injectable } from "@nestjs/common";
 import { CreateTypeDto } from "./dto/create-type.dto";
 import { UpdateTypeDto } from "./dto/update-type.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Type } from "./schema/types.schema";
+import { Model } from "mongoose";
+import { TypeInterface } from "./interface/types.interface";
 
 @Injectable()
 export class TypesService {
-  create(createTypeDto: CreateTypeDto) {
-    return "This action adds a new type";
+  constructor(@InjectModel(Type.name) private typeModel: Model<Type>) {}
+
+  async create(data: CreateTypeDto): Promise<TypeInterface> {
+    return await this.typeModel.create(data);
   }
 
-  findAll() {
-    return `This action returns all types`;
+  async findAll(pageNumber: number = undefined, limit: number = undefined, condition: object = {}): Promise<TypeInterface[]> {
+    if (!pageNumber && !limit) {
+      return await this.typeModel.find(condition).sort({ createdAt: -1 }).lean();
+    }
+    const skip = (Number(pageNumber) - 1) * Number(limit);
+    return await this.typeModel.find(condition).skip(skip).limit(limit).sort({ createdAt: -1 }).lean();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} type`;
+  async findOne(data: object): Promise<TypeInterface> {
+    return await this.typeModel.findOne(data);
   }
 
-  update(id: number, updateTypeDto: UpdateTypeDto) {
-    return `This action updates a #${id} type`;
+  async update(id: string, data: UpdateTypeDto): Promise<TypeInterface> {
+    return await this.typeModel
+      .findByIdAndUpdate(id, data, {
+        returnDocument: "after",
+      })
+      .lean();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} type`;
+  async remove(id: string): Promise<TypeInterface> {
+    return await this.typeModel.findByIdAndDelete(id);
   }
 }
