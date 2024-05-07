@@ -1,14 +1,15 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface ProductInterface extends Document {
-  BrandId: string;
-  categoryId: string;
-  typeId: string;
+  brandId: Types.ObjectId;
+  categoryId: Types.ObjectId;
+  typeId: Types.ObjectId;
   name: string;
-  images: Array<string>;
+  image: object;
   description: string;
   priceImport: number;
   priceSale: number;
   quantityImport: number;
-  quantitySale: number;
+  quatitySale: number;
+  dateImport: Date;
 }

@@ -31,6 +31,7 @@ export class TypesController {
         return res.status(409).json({ statusCode: 409, mes: "type already exists" });
       }
       const type = await this.typesService.create(data);
+      console.log(type);
       return res.status(201).json({
         mes: "Create successfully",
         type,
