@@ -7,6 +7,7 @@ import { RolesModule } from "./roles/roles.module";
 import { ProductsModule } from "./products/products.module";
 import { BrandsModule } from "./brands/brands.module";
 import { TypesModule } from "./types/types.module";
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TypesModule } from "./types/types.module";
     ProductsModule,
     BrandsModule,
     TypesModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
