@@ -13,6 +13,8 @@ async function bootstrap() {
       tagsSorter: "alpha", // Sắp xếp các tag theo thứ tự từ A-Z
     },
   });
-  await app.listen(8088);
+
+  const PORT = process.env.PORT
+  await app.listen(4000);
 }
 bootstrap();

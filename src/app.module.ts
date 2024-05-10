@@ -20,7 +20,13 @@ import { CategoriesModule } from './categories/categories.module';
       secret: process.env.JwtSecret,
       signOptions: { expiresIn: "60m" },
     }),
-    MongooseModule.forRoot(process.env.DB),
+    MongooseModule.forRoot(process.env.DATABASE_URI, {
+      dbName: process.env.DATABASE_NAME,
+      auth: {
+        username: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASS,
+      },
+    }),
     RolesModule,
     UsersModule,
     ProductsModule,
