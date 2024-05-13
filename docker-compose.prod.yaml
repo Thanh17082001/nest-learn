@@ -4,6 +4,7 @@ services:
   # app service for your backend
   app:
     container_name: backend
+    image: backend-nest
     build:
       context: ./
       dockerfile: Dockerfile
@@ -11,9 +12,11 @@ services:
       DATABASE_NAME: nest
       DATABASE_USER: ThienThanh
       DATABASE_PASS: 123@@
-      DATABASE_URI: mongodb://192.168.1.62:27017
+      DATABASE_URI: mongodb://database:27017
     ports:
-      - '192.168.1.62:4000:4000'
+      - '4000:4000'
+    networks:
+      - mynetwork
     depends_on:
       - database
 
@@ -24,6 +27,11 @@ services:
     restart: always
     ports:
       - '27017:27017'
+    networks:
+      - mynetwork
     environment:
       MONGO_INITDB_ROOT_USERNAME: ThienThanh
       MONGO_INITDB_ROOT_PASSWORD: 123@@
+networks:
+  mynetwork:
+    driver: bridge
