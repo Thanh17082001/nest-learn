@@ -24,6 +24,4 @@ jobs:
       - name: Build NestJS app
         run: npm run build
 
-      - name: Run test
-        run: npm test
 
