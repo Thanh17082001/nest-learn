@@ -30,7 +30,7 @@ export class BrandsController {
     try {
       const exitsBrand = await this.brandsService.findOne({ name: data.name });
       if (!!exitsBrand) {
-        return res.status(409).json({ statusCode: 409, mes: "brand already exists" });
+        return res.status(409).json({ statusCode: 409, mes: "brand already exists test ci cd" });
       }
       const brand = await this.brandsService.create(data);
       return res.status(201).json({
