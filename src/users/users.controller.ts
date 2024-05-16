@@ -14,7 +14,7 @@ import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
 import { RolesService } from "src/roles/roles.service";
 import { RoleGuard } from "src/guard/role.guard";
 
-@Controller("users")
+@Controller("userss")
 @ApiTags("users")
 export class UsersController {
   constructor(
