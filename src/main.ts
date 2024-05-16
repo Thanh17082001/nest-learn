@@ -14,6 +14,12 @@ async function bootstrap() {
     },
   });
 
+   const fs = require("fs");
+   const path = require("path");
+  const outputPath = path.join(__dirname, "swagger.json");
+  console.log(outputPath);
+   fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), "utf-8");
+
   const PORT = process.env.PORT
   await app.listen(4000);
 }
