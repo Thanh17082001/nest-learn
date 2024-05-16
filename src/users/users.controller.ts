@@ -42,7 +42,7 @@ export class UsersController {
     try {
       const userExist = await this.userService.findOne({ email: data.email });
       if (!!userExist) {
-        return res.status(400).json({ mes: "user already exists testtttttt 22222" });
+        return res.status(400).json({ mes: "user already exists testtttttt 333333" });
       }
       data.password = await bcrypt.hash(data.password, 10);
       await this.userService.create(data);
