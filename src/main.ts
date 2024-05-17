@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { RolesService } from "./roles/roles.service";
+// import TelegramBot from "node-telegram-bot-api";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api"); // set global route
@@ -21,6 +21,6 @@ async function bootstrap() {
    fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), "utf-8");
 
   const PORT = process.env.PORT
-  await app.listen(4000);
+  await app.listen(4000)
 }
 bootstrap();
