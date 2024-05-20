@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build && npm run copy && npm run node_modules:prod",
-    "copy": "copy \"package.json\" \"dist/\" && copy \"web.config\" \"dist/\"",
+    "copy": "copy \"package.json\" \"dist/\" && copy \"web.config\" \"dist/\" && copy \".env\" \"dist/\"",
     "node_modules:prod": "cd dist && npm install --only=production",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
