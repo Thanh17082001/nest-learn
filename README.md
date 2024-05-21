@@ -5,4 +5,3 @@ docker-compose -f docker-compose.prod.yaml up --build
 
 && npm run copy
 
-cicd với github
