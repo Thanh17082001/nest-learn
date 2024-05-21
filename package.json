@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "copy": "copy \"package.json\" \"dist/\" && copy \"web.config\" \"dist/\" && copy \".env\" \"dist/\" && copy \"tsconfig.json\" \"dist/\"",
-    
+    "node_modules:prod": "cd dist && npm install --only=production",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
