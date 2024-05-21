@@ -19,8 +19,10 @@ async function bootstrap() {
   const outputPath = path.join(__dirname, "swagger.json");
   console.log(outputPath);
    fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), "utf-8");
-
+   app.enableCors(); 
   const PORT = process.env.PORT
-  await app.listen(4000)
+  await app.listen(4000, () =>{
+    console.log('server running with http://localhost:4000/api');
+  })
 }
 bootstrap();

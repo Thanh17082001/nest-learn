@@ -9,6 +9,7 @@ import { BrandsModule } from "./brands/brands.module";
 import { TypesModule } from "./types/types.module";
 import { CategoriesModule } from './categories/categories.module';
 import { TelegramModule } from './telegram/telegram.module';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -37,6 +38,6 @@ import { TelegramModule } from './telegram/telegram.module';
     TelegramModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [ChatGateway],
 })
 export class AppModule {}
