@@ -6,9 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && npm run copy && npm run node_modules:prod",
-    "copy": "copy \"package.json\" \"dist/\" && copy \"web.config\" \"dist/\" && copy \".env\" \"dist/\"",
-    "node_modules:prod": "cd dist && npm install --only=production",
+    "build": "nest build && npm run copy",
+    "copy": "copy \"package.json\" \"dist/\" && copy \"web.config\" \"dist/\" && copy \".env\" \"dist/\" && copy \"tsconfig.json\" \"dist/\"",
+    
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
