@@ -3,7 +3,7 @@ name: Deploy to IIS
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -16,13 +16,32 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
 
       - name: Build project
         run: npm run build
+
+      - name: Copy files to dist directory
+        run: |
+          $src = "${{ github.workspace }}"
+          $dest = "$src\\dist"
+          if (!(Test-Path $dest)) {
+            New-Item -ItemType Directory -Force -Path $dest
+          }
+          Copy-Item -Path "$src\\package.json" -Destination "$dest" -Force
+          if (Test-Path "$src\\web.config") {
+            Copy-Item -Path "$src\\web.config" -Destination "$dest" -Force
+          }
+          if (Test-Path "$src\\.env") {
+            Copy-Item -Path "$src\\.env" -Destination "$dest" -Force
+          }
+          if (Test-Path "$src\\tsconfig.json") {
+            Copy-Item -Path "$src\\tsconfig.json" -Destination "$dest" -Force
+          }
+        shell: pwsh
 
       - name: Copy files to IIS
         run: |
