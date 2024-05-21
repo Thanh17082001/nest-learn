@@ -1,28 +1,36 @@
-name: CI/CD Pipeline
+name: Deploy to IIS
 
 on:
   push:
-    branches: ["master"]
+    branches:
+      - master
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '16'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build NestJS app
+      - name: Build project
         run: npm run build
 
-     
+      - name: Copy files to IIS
+        run: |
+          $iisAppPath = "C:\\inetpub\\wwwroot\\my-nestjs-app"
+          robocopy .\dist $iisAppPath /E /MIR
+          robocopy .\ $iisAppPath /E /XF .git* node_modules dist
+        shell: powershell
 
-
+      - name: Restart IIS
+        run: iisreset
+        shell: powershell
