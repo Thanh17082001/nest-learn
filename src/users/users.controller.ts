@@ -91,15 +91,14 @@ export class UsersController {
   //Get all user
   //middleware tonken
   @Get()
-  @Roles("staff")
+  @Roles("staff") //set xem routter này phải có quyền j
   @ApiBearerAuth()
   @UseGuards(RoleGuard) //2
   @UseGuards(AuthGuard) //1
   async getAll(@Res() res) {
     try {
       const users = await this.userService.getAll();
-      const test = await this.rolesService.find();
-      res.json({ test, users });
+      res.json({ users });
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
@@ -108,7 +107,7 @@ export class UsersController {
 
   //update roles user by id (query: userId, body: roleId)
   @Patch("update-role")
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: false }))
   @ApiBody({
     type: UserUpdaeRoleDto,
@@ -125,11 +124,16 @@ export class UsersController {
     type: "string",
     required: true,
   })
+  @ApiQuery({
+    name: "type",
+    type: "string",
+  })
   async updateRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
     try {
       const userId: string = query.userId;
-      await this.userService.updateRole(userId, data.roleId);
-      return res.status(200).json({ mes: "create successfully" });
+      const type: string = query.type || 'add' ;
+      await this.userService.updateRole(userId, data.roleId, type);
+      return res.status(200).json({ mes: "update role successfully" });
     } catch (error) {}
   }
 }

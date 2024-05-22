@@ -10,6 +10,7 @@ import { TypesModule } from "./types/types.module";
 import { CategoriesModule } from './categories/categories.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { ChatGateway } from './chat/chat.gateway';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ChatGateway } from './chat/chat.gateway';
     TypesModule,
     CategoriesModule,
     TelegramModule,
+    FriendsModule,
   ],
   controllers: [],
   providers: [ChatGateway],
