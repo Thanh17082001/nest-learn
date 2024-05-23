@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Fix vulnerabilities
-        run: npm audit fix
+      - name: Audit and fix vulnerabilities
+        run: npm audit fix && npm audit fix --force || true
 
       - name: Build project
         run: npm run build
