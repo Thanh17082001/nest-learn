@@ -23,8 +23,3 @@ jobs:
 
       - name: Build project
         run: npm run build
-
-      - name: Restart IIS
-        run: |
-          iisreset
-        shell: pwsh
