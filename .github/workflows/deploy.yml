@@ -7,14 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: windowns-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
@@ -23,32 +23,6 @@ jobs:
 
       - name: Build project
         run: npm run build
-
-      - name: Copy files to dist directory
-        run: |
-          $src = "${{ github.workspace }}"
-          $dest = "$src\\dist"
-          if (!(Test-Path $dest)) {
-            New-Item -ItemType Directory -Force -Path $dest
-          }
-          Copy-Item -Path "$src\\package.json" -Destination "$dest" -Force
-          if (Test-Path "$src\\web.config") {
-            Copy-Item -Path "$src\\web.config" -Destination "$dest" -Force
-          }
-          if (Test-Path "$src\\.env") {
-            Copy-Item -Path "$src\\.env" -Destination "$dest" -Force
-          }
-          if (Test-Path "$src\\tsconfig.json") {
-            Copy-Item -Path "$src\\tsconfig.json" -Destination "$dest" -Force
-          }
-        shell: pwsh
-
-      - name: Copy files to IIS
-        run: |
-          $iisAppPath = "C:\\inetpub\\wwwroot\\my-nestjs-app"
-          robocopy .\dist $iisAppPath /E /MIR
-          robocopy .\ $iisAppPath /E /XF .git* node_modules dist
-        shell: powershell
 
       - name: Restart IIS
         run: iisreset

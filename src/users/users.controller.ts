@@ -91,9 +91,9 @@ export class UsersController {
   //Get all user
   //middleware tonken
   @Get()
-  @Roles("staff") //set xem routter này phải có quyền j
-  @ApiBearerAuth()
-  @UseGuards(RoleGuard) //2
+  // @Roles("staff") //set xem routter này phải có quyền j
+  // @ApiBearerAuth()
+  // @UseGuards(RoleGuard) //2
   @UseGuards(AuthGuard) //1
   async getAll(@Res() res) {
     try {

@@ -1,9 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { WsException } from "@nestjs/websockets";
 import { Request } from "express";
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class ChatAuth implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -11,15 +12,15 @@ export class AuthGuard implements CanActivate {
     const client = context.switchToWs().getClient() 
     const token = this.extractTokenFromHeader(request) || client.handshake?.auth.token || undefined;
     if (!token) {
-      throw new UnauthorizedException();
+      throw new WsException('Please log in again');
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JwtSecret,
       });
-      request["user"] = payload;
+       client.data.user = payload;
     } catch (e) {
-      throw new UnauthorizedException();
+      throw new WsException('Please log in again');
     }
     return true;
   }
