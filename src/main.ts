@@ -17,12 +17,15 @@ async function bootstrap() {
    const fs = require("fs");
    const path = require("path");
   const outputPath = path.join(__dirname, "swagger.json");
-  console.log(outputPath);
    fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), "utf-8");
-   app.enableCors(); 
-  const PORT = process.env.PORT
-  await app.listen(4000, () =>{
-    console.log('server running with http://localhost:4000/api');
+   app.enableCors({
+     origin: ["http://localhost:3000", process.env.FE_URL],
+     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+     credentials: true,
+   });
+  const PORT = process.env.PORT ||3005
+  await app.listen(PORT, () =>{
+    console.log(`server running with http://localhost:${PORT}/api`);
   })
 }
 bootstrap();

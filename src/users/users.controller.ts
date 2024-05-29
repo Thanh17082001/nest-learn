@@ -1,6 +1,6 @@
 import { Product } from "./../products/entities/product.entity";
 
-import { Controller, Get, Body, Res, Post, UseGuards, UsePipes, ValidationPipe, Put, Query, Patch } from "@nestjs/common";
+import { Controller, Get, Body, Res, Post, UseGuards, UsePipes, ValidationPipe, Put, Query, Patch, Delete } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { UserCreateDto } from "./dto/users.createDto";
 import * as bcrypt from "bcryptjs";
@@ -14,7 +14,7 @@ import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
 import { RolesService } from "src/roles/roles.service";
 import { RoleGuard } from "src/guard/role.guard";
 
-@Controller("userss")
+@Controller("users")
 @ApiTags("users")
 export class UsersController {
   constructor(
@@ -74,7 +74,7 @@ export class UsersController {
       }
       const isPass = await bcrypt.compare(data.password, userExist.password);
       if (!isPass) {
-        return res.status(400).json({ mes: "email or password is incorrect 12121" });
+        return res.status(400).json({ mes: "email or password is incorrect" });
       }
 
       const token = await this.jwt.signAsync(userExist);
@@ -94,7 +94,7 @@ export class UsersController {
   // @Roles("staff") //set xem routter này phải có quyền j
   // @ApiBearerAuth()
   // @UseGuards(RoleGuard) //2
-  @UseGuards(AuthGuard) //1
+  // @UseGuards(AuthGuard) //1
   async getAll(@Res() res) {
     try {
       const users = await this.userService.getAll();
@@ -106,7 +106,7 @@ export class UsersController {
   }
 
   //update roles user by id (query: userId, body: roleId)
-  @Patch("update-role")
+  @Post("add-role")
   // @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: false }))
   @ApiBody({
@@ -124,16 +124,37 @@ export class UsersController {
     type: "string",
     required: true,
   })
-  @ApiQuery({
-    name: "type",
-    type: "string",
-  })
-  async updateRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
+  async addRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
     try {
       const userId: string = query.userId;
-      const type: string = query.type || 'add' ;
-      await this.userService.updateRole(userId, data.roleId, type);
-      return res.status(200).json({ mes: "update role successfully" });
+      await this.userService.updateRole(userId, data.roleId, "add");
+      return res.status(200).json({ mes: "add role successfully" });
+    } catch (error) {}
+  }
+
+  @Delete("delete-role")
+  // @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true, disableErrorMessages: false }))
+  @ApiBody({
+    type: UserUpdaeRoleDto,
+    examples: {
+      data: {
+        value: {
+          roleId: "",
+        } as UserUpdaeRoleDto,
+      },
+    },
+  })
+  @ApiQuery({
+    name: "userId",
+    type: "string",
+    required: true,
+  })
+  async deleteRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
+    try {
+      const userId: string = query.userId;
+      await this.userService.updateRole(userId, data.roleId, "remove");
+      return res.status(200).json({ mes: "delete role successfully" });
     } catch (error) {}
   }
 }
