@@ -8,7 +8,6 @@ import { ProductsModule } from "./products/products.module";
 import { BrandsModule } from "./brands/brands.module";
 import { TypesModule } from "./types/types.module";
 import { CategoriesModule } from './categories/categories.module';
-import { TelegramModule } from './telegram/telegram.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { FriendsModule } from './friends/friends.module';
 
@@ -35,7 +34,6 @@ import { FriendsModule } from './friends/friends.module';
     BrandsModule,
     TypesModule,
     CategoriesModule,
-    TelegramModule,
     FriendsModule,
   ],
   controllers: [],

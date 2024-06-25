@@ -13,6 +13,10 @@ export class UsersService {
   }
 
   async findOne(data: object): Promise<UserInterface> {
+    return await this.userModel.findOne(data).lean();
+  }
+
+  async findById(data: object): Promise<UserInterface> {
     return await this.userModel.findOne(data).populate({ path: "roles" }).populate({ path: "friends" }).lean();
   }
 

@@ -7,19 +7,22 @@ import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Response } from "express";
 import { FriendInterface } from './interface/friend.interface';
 import { AuthGuard } from 'src/guard/auth';
-import { UpdateStatusDto } from './dto/update-status.dto';
+import { UpdateFriendStatusDto } from './dto/update-status.dto';
 import { UsersService } from 'src/users/users.service';
 
 @Controller("friends")
+@UseGuards(AuthGuard)
 @ApiTags("friends")
 export class FriendsController {
-  constructor(private readonly friendsService: FriendsService, private readonly userService:UsersService) {}
+  constructor(
+    private readonly friendsService: FriendsService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Post("create")
-  @UseGuards(AuthGuard)
   async create(@Body() createFriendDto: CreateFriendDto, @Res() res: Response): Promise<Response> {
     try {
-      const exitsRequest: FriendInterface = await this.friendsService.findOne(createFriendDto);
+      const exitsRequest: FriendInterface = await this.friendsService.findOne({ ...createFriendDto, status: "pending" });
       if (!!exitsRequest) {
         return res.status(400).json({
           mes: "The request has been sent before ",
@@ -36,15 +39,41 @@ export class FriendsController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.friendsService.findAll();
+  @Get(":requesterId")
+  @ApiParam({
+    name: "requesterId",
+    type: "string",
+    required: true,
+  })
+  async findByRequestId(@Param("requesterId") requesterId: string, @Res() res: Response): Promise<Response> {
+    try {
+      const friends = await this.friendsService.findAll({ requesterId: requesterId, status: "pending" });
+
+      return res.status(200).json({
+        friends,
+      });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.friendsService.findOne(+id);
-  // }
+  @Get(":receiverId")
+  @ApiParam({
+    name: "receiverId",
+    type: "string",
+    required: true,
+  })
+  async findByReceiverId(@Param("receiverId") receiverId: string, @Res() res: Response): Promise<Response> {
+    try {
+      const friends = await this.friendsService.findAll({ receiverId: receiverId, status: "pending" });
+
+      return res.status(200).json({
+        friends,
+      });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
 
   @Patch("status/:id")
   @ApiParam({
@@ -52,7 +81,7 @@ export class FriendsController {
     type: "string",
     required: true,
   })
-  async update(@Param("id") id: Types.ObjectId, @Body() UpdateStatusDto: UpdateStatusDto, @Res() res: Response): Promise<Response> {
+  async update(@Param("id") id: Types.ObjectId, @Body() UpdateFriendStatusDto: UpdateFriendStatusDto, @Res() res: Response): Promise<Response> {
     try {
       const exits = await this.friendsService.findOne({ _id: id });
       if (!!!exits) {
@@ -61,27 +90,22 @@ export class FriendsController {
         });
       }
 
-      const update = await this.friendsService.update(id, UpdateStatusDto);
-      if (update.status == 'accepted') {
-        await this.userService.updateFriend(update.receiverId, update.requesterId)
+      const update = await this.friendsService.update(id, UpdateFriendStatusDto);
+      if (update.status == "accepted") {
+        await this.userService.updateFriend(update.receiverId, update.requesterId);
         await this.userService.updateFriend(update.requesterId, update.receiverId);
-      }
-      else if (update.status == "cancel") {
-         await this.userService.updateFriend(update.receiverId, update.requesterId,'remove');
-         await this.userService.updateFriend(update.requesterId, update.receiverId, 'remove');
+        await this.friendsService.remove(id);
+      } else if (update.status == "canceled") {
+        await this.userService.updateFriend(update.receiverId, update.requesterId, "remove");
+        await this.userService.updateFriend(update.requesterId, update.receiverId, "remove");
+        await this.friendsService.remove(id);
       }
       res.status(200).json({
-        message: "Update successfully",
-        friend: update,
+        message: update.status == "accepted" ? "added successfully" : "canceled successfully ",
       });
     } catch (error) {
       res.status(500).json(error);
       console.log(error);
     }
   }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.friendsService.remove(+id);
-  // }
 }
