@@ -12,6 +12,8 @@ export class User {
   email: string;
   @Prop()
   password: string;
+  @Prop()
+  refreshToken: string;
   @Prop({ ref: Role.name })
   roles: Array<string>;
   @Prop({ ref: User.name })

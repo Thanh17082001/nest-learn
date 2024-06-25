@@ -21,7 +21,6 @@ import { FriendsModule } from './friends/friends.module';
     JwtModule.register({
       global: true,
       secret: process.env.JwtSecret,
-      signOptions: { expiresIn: "60m" },
     }),
     MongooseModule.forRoot(process.env.DATABASE_URI, {
       dbName: process.env.DATABASE_NAME,

@@ -20,19 +20,21 @@ export class UsersService {
     return await this.userModel.find().populate({ path: "roles" }).populate({ path: "friends" }).lean();
   }
 
-  async updateRole(userId: string, roleId: string, type: string = 'add'): Promise<UserInterface> {
-    if (type == 'remove') {
+  async updateRole(userId: string, roleId: string, type: string = "add"): Promise<UserInterface> {
+    if (type == "remove") {
       return await this.userModel.findByIdAndUpdate(userId, { $pull: { roles: roleId } }, { returnDocument: "after", upsert: true });
-      
     }
     return await this.userModel.findByIdAndUpdate(userId, { $addToSet: { roles: roleId } }, { returnDocument: "after", upsert: true });
   }
 
-  async updateFriend(userId: Types.ObjectId, friendId: Types.ObjectId, type: string = 'add'): Promise<UserInterface> {
-    if (type == 'remove') {
+  async updateFriend(userId: Types.ObjectId, friendId: Types.ObjectId, type: string = "add"): Promise<UserInterface> {
+    if (type == "remove") {
       return await this.userModel.findByIdAndUpdate(userId, { $pull: { friends: friendId } }, { returnDocument: "after", upsert: true });
-      
     }
     return await this.userModel.findByIdAndUpdate(userId, { $addToSet: { friends: friendId } }, { returnDocument: "after", upsert: true });
+  }
+
+  async updateRT(id: Types.ObjectId, rt: String) {
+    return await this.userModel.findByIdAndUpdate(id,{refreshToken:rt}, {returnDocument:'after'})
   }
 }

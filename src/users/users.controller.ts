@@ -8,13 +8,14 @@ import { UserLoginDto } from "./dto/users.loginDto";
 import { JwtService } from "@nestjs/jwt";
 import { AuthGuard } from "src/guard/auth";
 import { UserUpdaeRoleDto } from "./dto/user.updateRoleDto";
-import { Response } from "express";
+import e, { Response } from "express";
 import { Roles } from "src/guard/role.decorator";
 import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
 import { RolesService } from "src/roles/roles.service";
 import { RoleGuard } from "src/guard/role.guard";
+import { Tokens } from "./types/tokens.type";
 
-@Controller("userss")
+@Controller("users")
 @ApiTags("users")
 export class UsersController {
   constructor(
@@ -45,9 +46,11 @@ export class UsersController {
         return res.status(400).json({ mes: "user already exists testtttttt 100000" });
       }
       data.password = await bcrypt.hash(data.password, 10);
-      await this.userService.create(data);
+      const user = await this.userService.create(data);
+      
       res.status(200).json({ mes: "create successfully" });
     } catch (error) {
+      console.log(error);
       res.status(500).json(error);
     }
   }
@@ -77,9 +80,11 @@ export class UsersController {
         return res.status(400).json({ mes: "email or password is incorrect 12121" });
       }
 
-      const token = await this.jwt.signAsync(userExist);
+      const tokens = await this.getTokens({ ...userExist }, { id: userExist._id });
+      const rtHasshed = await bcrypt.hash(tokens.refresh_token, 10);
+      await this.userService.updateRT(userExist._id, rtHasshed);
       return res.status(200).json({
-        token,
+        tokens,
         user: userExist,
       });
     } catch (error) {
@@ -131,9 +136,25 @@ export class UsersController {
   async updateRole(@Body() data: UserUpdaeRoleDto, @Res() res: Response, @Query() query) {
     try {
       const userId: string = query.userId;
-      const type: string = query.type || 'add' ;
+      const type: string = query.type || "add";
       await this.userService.updateRole(userId, data.roleId, type);
       return res.status(200).json({ mes: "update role successfully" });
     } catch (error) {}
+  }
+
+  async getTokens(payloadAT:object, payloadRT:object): Promise<Tokens> {
+    const [at, rt] = await Promise.all([
+      this.jwt.signAsync(payloadAT, {
+        expiresIn: "15m",
+      }),
+      this.jwt.signAsync(payloadRT, {
+        expiresIn: "7d",
+      }),
+    ]);
+
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
   }
 }
